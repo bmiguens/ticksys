@@ -1,0 +1,78 @@
+<html>
+<head>
+<script type="text/javascript">
+// function foo(response) {
+//   var meta = response.meta;
+//   var data = response.data;
+//   //console.log(meta);
+//   console.log(data);
+// }
+
+// var script = document.createElement('script');
+// script.src = 'https://api.github.com/user' + '?callback=foo';
+
+// document.getElementsByTagName('head')[0].appendChild(script);
+
+
+var url = 'https://api.github.com/user';
+var user = 'bmiguens';
+var pass = '';
+    
+function getUser(){
+	var xhr = new XMLHttpRequest();
+  if(xhr) {
+    xhr.open('GET', url, true);
+    xhr.setRequestHeader( 'Authorization', 'Basic ' + btoa( user + ':' + pass ) );
+  	xhr.onreadystatechange = function() {
+  		if (xhr.readyState == 4 && xhr.status == 200) {
+  			var data = JSON.parse(xhr.responseText);
+    		setImg(data.avatar_url);
+  		}
+	}
+    xhr.send(); 
+  }
+}
+
+function getRepos(){
+	var xhr = new XMLHttpRequest();
+  if(xhr) {
+    xhr.open('GET', url + '/repos', true);
+    xhr.setRequestHeader( 'Authorization', 'Basic ' + btoa( user + ':' + pass ) );
+  	xhr.onreadystatechange = function() {
+  		if (xhr.readyState == 4 && xhr.status == 200) {
+  			var data = JSON.parse(xhr.responseText);
+
+  			var repos = document.getElementById('repos');
+
+  			for (i in data) {
+  				var repo = document.createElement('li');
+  				var text = document.createTextNode(data[i].full_name);
+  				repo.appendChild(text);
+  				repos.appendChild(repo);
+  			}
+    		
+  		}
+	}
+    xhr.send(); 
+  }
+}
+
+
+function setImg(url) {
+	var img = document.createElement('img');
+	img.src = url;
+	document.getElementById('avatar').appendChild(img);
+}
+
+
+
+getUser();
+getRepos();
+</script>
+</head>
+
+<body>
+  <div id="avatar"></div>
+  <ul id="repos"></ul>
+</body>
+</html>
